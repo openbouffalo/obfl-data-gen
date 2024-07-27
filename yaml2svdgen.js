@@ -91,7 +91,7 @@ export default class Yaml2SvdGenerator {
             case 'w': access = 'write-only'; break;
             case 'r/w': access = 'read-write'; break;
             case 'rw': access = 'read-write'; break;
-            case 'w1c': case 'w1p': /* TODO: */ break;
+            case 'w1c': case 'w1p': case 'otp': /* TODO: */ break;
             default: {
               if (regField.access != undefined) {
                 console.log(`Unknown access ${regField.access}`);
