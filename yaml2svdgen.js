@@ -55,14 +55,17 @@ export default class Yaml2SvdGenerator {
   async _genRegistersBlock(chipPeri, periBlock) {
     let periInfo = this._periInfoCache[chipPeri.peripheral];
     if (periInfo === undefined) {
-      const periInfoPath = path.join(this._chipFolder, 'peripherals', `${chipPeri.peripheral}_reg.yaml`);
-      if (await fileExists(periInfoPath)) {
-        periInfo = YAML.parse(await fs.readFile(periInfoPath, 'utf8'));
-        this._periInfoCache[chipPeri.peripheral] = periInfo;
-      } else {
-        periInfo = null;
-        this._periInfoCache[chipPeri.peripheral] = null;
-      } 
+      const regFileNames = [ `${chipPeri.peripheral}.yaml`, `${chipPeri.peripheral}_reg.yaml` ];
+      periInfo = null;
+      this._periInfoCache[chipPeri.peripheral] = null;
+      for (const regFileName of regFileNames) {
+        const periInfoPath = path.join(this._chipFolder, 'peripherals', regFileName);
+        if (await fileExists(periInfoPath)) {
+          periInfo = YAML.parse(await fs.readFile(periInfoPath, 'utf8'));
+          this._periInfoCache[chipPeri.peripheral] = periInfo;
+          break;
+        }
+      }
     }
     if (periInfo === null) return null;
     const registers = [];
